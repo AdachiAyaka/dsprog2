@@ -35,7 +35,7 @@ class ExtraActionButton(CalcButton):
 class ScientificButton(CalcButton):
     def __init__(self, text, button_clicked):
         CalcButton.__init__(self, text, button_clicked)
-        self.bgcolor = ft.colors.BLUE_ACCENT_100
+        self.bgcolor = ft.colors.BLUE_ACCENT_200
         self.color = ft.colors.BLACK
 
 # 電卓アプリ全体のクラス
