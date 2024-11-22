@@ -21,7 +21,7 @@ class DigitButton(CalcButton):
 class ActionButton(CalcButton):
     def __init__(self, text, button_clicked):
         CalcButton.__init__(self, text, button_clicked)
-        self.bgcolor = ft.colors.ORANGE
+        self.bgcolor = ft.colors.ORANGE_ACCENT_200
         self.color = ft.colors.WHITE
 
 # 特殊操作ボタンクラス（ACや%など）
