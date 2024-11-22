@@ -14,7 +14,7 @@ class CalcButton(ft.ElevatedButton):
 class DigitButton(CalcButton):
     def __init__(self, text, button_clicked, expand=1):
         CalcButton.__init__(self, text, button_clicked, expand)
-        self.bgcolor = ft.colors.WHITE24
+        self.bgcolor = ft.colors.WHITE12
         self.color = ft.colors.WHITE
 
 # 演算子ボタンのクラス
