@@ -1,7 +1,7 @@
 import flet as ft
 import math
 
-# CalcButtonクラス: 電卓のボタンの基本クラス
+# CalcButtonクラス:電卓のボタンの基本クラス
 class CalcButton(ft.ElevatedButton):
     def __init__(self, text, button_clicked, expand=1):
         super().__init__()
@@ -10,28 +10,28 @@ class CalcButton(ft.ElevatedButton):
         self.on_click = button_clicked
         self.data = text
 
-# 数字ボタン用のクラス
+# 数字ボタンのクラス
 class DigitButton(CalcButton):
     def __init__(self, text, button_clicked, expand=1):
         CalcButton.__init__(self, text, button_clicked, expand)
         self.bgcolor = ft.colors.WHITE24
         self.color = ft.colors.WHITE
 
-# 演算子ボタン用のクラス
+# 演算子ボタンのクラス
 class ActionButton(CalcButton):
     def __init__(self, text, button_clicked):
         CalcButton.__init__(self, text, button_clicked)
         self.bgcolor = ft.colors.ORANGE
         self.color = ft.colors.WHITE
 
-# 特殊操作ボタン用クラス（ACや%など）
+# 特殊操作ボタンクラス（ACや%など）
 class ExtraActionButton(CalcButton):
     def __init__(self, text, button_clicked):
         CalcButton.__init__(self, text, button_clicked)
         self.bgcolor = ft.colors.BLUE_GREY_100
         self.color = ft.colors.BLACK
 
-# 科学計算用のボタン（sin, cosなど）
+# 科学計算のボタン（sin, cosなど）
 class ScientificButton(CalcButton):
     def __init__(self, text, button_clicked):
         CalcButton.__init__(self, text, button_clicked)
@@ -44,7 +44,7 @@ class CalculatorApp(ft.Container):
         super().__init__()
         self.reset()   # 電卓の初期化
 
-        # 結果表示用のテキスト
+        # 結果表示のテキスト
         self.result = ft.Text(value="0", color=ft.colors.WHITE, size=20)
         self.width = 500
         self.bgcolor = ft.colors.BLACK
@@ -123,7 +123,7 @@ class CalculatorApp(ft.Container):
             ]
         )
 
-    # ボタンがクリックされたときの処理
+# ボタンがクリックされたときの処理
     def button_clicked(self, e):
         data = e.control.data   # 押されたボタンのデータを取得
         print(f"Button clicked with data = {data}")
