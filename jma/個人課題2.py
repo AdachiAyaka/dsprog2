@@ -141,7 +141,7 @@ def main(page: ft.Page):
     page.spacing = 0
     page.padding = 0
     page.window_width = 900  # ウィンドウ幅
-    page.window_height = 700  # ウィンドウ高さ
+    page.window_height = 800  # ウィンドウ高さ
     page.window_resizable = True  # サイズ変更可能
 
     # 天気表示用のテキストウィジェット
