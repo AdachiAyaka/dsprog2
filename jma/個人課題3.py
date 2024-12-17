@@ -5,64 +5,77 @@ import sqlite3
 # SQLite データベースのセットアップ
 def setup_database():
     """データベースのセットアップ"""
+    # データベースファイル "weather.db" を開く (存在しない場合は新規作成される)
     conn = sqlite3.connect("weather.db")
-    cursor = conn.cursor()
-    # 地域テーブル
+    cursor = conn.cursor() # SQLクエリを実行するためのカーソルオブジェクトを取得
+    # 地域テーブル: 地域名を格納 (例: 北海道地方、東北地方など)
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS regions (
-        region_id INTEGER PRIMARY KEY,
-        region_name TEXT NOT NULL
+        region_id INTEGER PRIMARY KEY,  -- 地域ID (プライマリキー、整数)
+        region_name TEXT NOT NULL       -- 地域名 (例: "北海道地方")
     );
     """)
 
-    # 都道府県テーブル
+    # 都道府県テーブル: 都道府県情報を格納
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS prefectures (
-        prefecture_id TEXT PRIMARY KEY,
-        region_id INTEGER,
-        prefecture_name TEXT NOT NULL,
-        FOREIGN KEY (region_id) REFERENCES regions (region_id)
+        prefecture_id TEXT PRIMARY KEY,  -- 都道府県ID (例: "011000")
+        region_id INTEGER,               -- 地域ID (regions テーブルへの外部キー)
+        prefecture_name TEXT NOT NULL,   -- 都道府県名 (例: "北海道")
+        FOREIGN KEY (region_id) REFERENCES regions (region_id)  -- 外部キー制約
     );
     """)
 
-    # 天気予報テーブル
+    # 天気予報テーブル: 天気予報データを格納
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS weather_forecasts (
-        forecast_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        prefecture_id TEXT,
-        date TEXT,
-        forecast TEXT,
-        FOREIGN KEY (prefecture_id) REFERENCES prefectures (prefecture_id)
+        forecast_id INTEGER PRIMARY KEY AUTOINCREMENT,  -- 自動生成されるID
+        prefecture_id TEXT,                             -- 都道府県ID (prefectures テーブルへの外部キー)
+        date TEXT,                                      -- 日付 (例: "2024-12-17")
+        forecast TEXT,                                  -- 天気予報 (例: "晴れのち曇り")
+        FOREIGN KEY (prefecture_id) REFERENCES prefectures (prefecture_id)  -- 外部キー制約
     );
     """)
+
+    # 変更内容を保存
     conn.commit()
-    return conn
+    return conn  # データベース接続オブジェクトを返す
 
 # 地域と都道府県データの初期投入
 def insert_regions_and_prefectures(conn, area_list):
-    cursor = conn.cursor()
+    cursor = conn.cursor() # カーソルオブジェクトを取得
+
+    # area_list の内容をループして地域データを挿入
     for region_id, (region_name, data) in enumerate(area_list.items(), start=1):
+        # 地域データを regions テーブルに挿入 (すでに存在する場合は無視)
         cursor.execute("INSERT OR IGNORE INTO regions (region_id, region_name) VALUES (?, ?)", (region_id, region_name))
         for prefecture_code, prefecture_name in data["prefectures"].items():
+            # 都道府県データを prefectures テーブルに挿入 (すでに存在する場合は無視)
             cursor.execute(
                 "INSERT OR IGNORE INTO prefectures (prefecture_id, region_id, prefecture_name) VALUES (?, ?, ?)",
                 (prefecture_code, region_id, prefecture_name)
             )
+    # 変更内容を保存
     conn.commit()
 
 # 天気データを保存する関数
 def save_weather_to_db(conn, prefecture_code, weather_data):
     try:
-        cursor = conn.cursor()
+        cursor = conn.cursor() # カーソルオブジェクトを取得
+        # 天気データを解析してデータベースに保存
         areas = weather_data[0]["timeSeries"][0]["areas"]
+        # 各地域の天気予報を解析して挿入
         for area in areas:
-            forecast = area['weathers'][0]
-            date = weather_data[0]["timeSeries"][0]["timeDefines"][0]
+            forecast = area['weathers'][0] # 天気予報
+            date = weather_data[0]["timeSeries"][0]["timeDefines"][0] # 日付
+            # 天気予報データを weather_forecasts テーブルに挿入
             cursor.execute(
                 "INSERT INTO weather_forecasts (prefecture_id, date, forecast) VALUES (?, ?, ?)",
                 (prefecture_code, date, forecast)
             )
+        # 変更内容を保存
         conn.commit()
+        
     except Exception as e:
         print(f"Error saving weather data: {e}")
 
